@@ -2,7 +2,6 @@ package backendplugin
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -15,15 +14,11 @@ type GRPCClient struct {
 }
 
 func (c *GRPCClient) Configure(ctx context.Context, config map[string]string) error {
-	response, err := c.client.ConfigureBackend(ctx, &proto.ConfigureBackend_Request{
+	_, err := c.client.ConfigureBackend(ctx, &proto.ConfigureBackend_Request{
 		Config: config,
 	})
 
-	if err != nil {
-		return fmt.Errorf("failed to configure plugin: %w", err)
-	}
-
-	return buildGoError(response.Errors)
+	return fmt.Errorf("failed to configure backend: %w", err)
 }
 
 func (c *GRPCClient) ListWorkspaces(ctx context.Context) ([]string, error) {
@@ -32,32 +27,16 @@ func (c *GRPCClient) ListWorkspaces(ctx context.Context) ([]string, error) {
 		return nil, fmt.Errorf("failed to list workspaces: %w", err)
 	}
 
-	return response.Workspaces, buildGoError(response.Errors)
-}
-
-func (c *GRPCClient) CreateWorkspace(ctx context.Context, workspace string) error {
-	response, err := c.client.CreateWorkspace(ctx, &proto.CreateWorkspace_Request{
-		Workspace: workspace,
-	})
-
-	if err != nil {
-		return fmt.Errorf("failed to create workspace: %w", err)
-	}
-
-	return buildGoError(response.Errors)
+	return response.Workspaces, nil
 }
 
 func (c *GRPCClient) DeleteWorkspace(ctx context.Context, workspace string, force bool) error {
-	response, err := c.client.DeleteWorkspace(ctx, &proto.DeleteWorkspace_Request{
+	_, err := c.client.DeleteWorkspace(ctx, &proto.DeleteWorkspace_Request{
 		Workspace: workspace,
 		Force:     force,
 	})
 
-	if err != nil {
-		return fmt.Errorf("failed to delete workspace: %w", err)
-	}
-
-	return buildGoError(response.Errors)
+	return fmt.Errorf("failed to delete workspace: %w", err)
 }
 
 func (c *GRPCClient) GetStatePayload(ctx context.Context, workspace string) (*Payload, error) {
@@ -74,11 +53,11 @@ func (c *GRPCClient) GetStatePayload(ctx context.Context, workspace string) (*Pa
 	return &Payload{
 		Data: response.Payload.Data,
 		MD5:  response.Payload.Md5,
-	}, buildGoError(response.Errors)
+	}, nil
 }
 
 func (c *GRPCClient) PutState(ctx context.Context, workspace string, data []byte) error {
-	response, err := c.client.PutState(ctx, &proto.PutState_Request{
+	_, err := c.client.PutState(ctx, &proto.PutState_Request{
 		Workspace: workspace,
 		Data:      data,
 	})
@@ -87,11 +66,11 @@ func (c *GRPCClient) PutState(ctx context.Context, workspace string, data []byte
 		return fmt.Errorf("failed to put state: %w", err)
 	}
 
-	return buildGoError(response.Errors)
+	return nil
 }
 
 func (c *GRPCClient) DeleteState(ctx context.Context, workspace string) error {
-	response, err := c.client.DeleteState(ctx, &proto.DeleteState_Request{
+	_, err := c.client.DeleteState(ctx, &proto.DeleteState_Request{
 		Workspace: workspace,
 	})
 
@@ -99,7 +78,7 @@ func (c *GRPCClient) DeleteState(ctx context.Context, workspace string) error {
 		return fmt.Errorf("failed to delete state: %w", err)
 	}
 
-	return buildGoError(response.Errors)
+	return nil
 }
 
 func (c *GRPCClient) LockState(ctx context.Context, workspace string, info *LockInfo) (string, error) {
@@ -120,11 +99,11 @@ func (c *GRPCClient) LockState(ctx context.Context, workspace string, info *Lock
 		return "", fmt.Errorf("failed to lock state: %w", err)
 	}
 
-	return response.Id, buildGoError(response.Errors)
+	return response.Id, fmt.Errorf("failed to lock state: %w", err)
 }
 
 func (c *GRPCClient) UnlockState(ctx context.Context, workspace, id string) error {
-	response, err := c.client.UnlockState(ctx, &proto.StateUnlock_Request{
+	_, err := c.client.UnlockState(ctx, &proto.StateUnlock_Request{
 		Workspace: workspace,
 		Id:        id,
 	})
@@ -133,15 +112,5 @@ func (c *GRPCClient) UnlockState(ctx context.Context, workspace, id string) erro
 		return fmt.Errorf("failed to unlock state: %w", err)
 	}
 
-	return buildGoError(response.Errors)
-}
-
-func buildGoError(messages []string) error {
-	result := make([]error, len(messages))
-
-	for i := range messages {
-		result[i] = errors.New(messages[i])
-	}
-
-	return errors.Join(result...)
+	return nil
 }

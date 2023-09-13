@@ -18,15 +18,14 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendClient interface {
-	ConfigureBackend(ctx context.Context, in *ConfigureBackend_Request, opts ...grpc.CallOption) (*ConfigureBackend_Response, error)
-	CreateWorkspace(ctx context.Context, in *CreateWorkspace_Request, opts ...grpc.CallOption) (*CreateWorkspace_Response, error)
-	DeleteWorkspace(ctx context.Context, in *DeleteWorkspace_Request, opts ...grpc.CallOption) (*DeleteWorkspace_Response, error)
+	ConfigureBackend(ctx context.Context, in *ConfigureBackend_Request, opts ...grpc.CallOption) (*Empty, error)
+	DeleteWorkspace(ctx context.Context, in *DeleteWorkspace_Request, opts ...grpc.CallOption) (*Empty, error)
 	ListWorkspaces(ctx context.Context, in *ListWorkspaces_Request, opts ...grpc.CallOption) (*ListWorkspaces_Response, error)
 	GetStatePayload(ctx context.Context, in *GetStatePayload_Request, opts ...grpc.CallOption) (*GetStatePayload_Response, error)
-	PutState(ctx context.Context, in *PutState_Request, opts ...grpc.CallOption) (*PutState_Response, error)
-	DeleteState(ctx context.Context, in *DeleteState_Request, opts ...grpc.CallOption) (*DeleteState_Response, error)
+	PutState(ctx context.Context, in *PutState_Request, opts ...grpc.CallOption) (*Empty, error)
+	DeleteState(ctx context.Context, in *DeleteState_Request, opts ...grpc.CallOption) (*Empty, error)
 	LockState(ctx context.Context, in *StateLock_Request, opts ...grpc.CallOption) (*StateLock_Response, error)
-	UnlockState(ctx context.Context, in *StateUnlock_Request, opts ...grpc.CallOption) (*StateUnlock_Response, error)
+	UnlockState(ctx context.Context, in *StateUnlock_Request, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type backendClient struct {
@@ -37,8 +36,8 @@ func NewBackendClient(cc grpc.ClientConnInterface) BackendClient {
 	return &backendClient{cc}
 }
 
-func (c *backendClient) ConfigureBackend(ctx context.Context, in *ConfigureBackend_Request, opts ...grpc.CallOption) (*ConfigureBackend_Response, error) {
-	out := new(ConfigureBackend_Response)
+func (c *backendClient) ConfigureBackend(ctx context.Context, in *ConfigureBackend_Request, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/Backend/ConfigureBackend", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,17 +45,8 @@ func (c *backendClient) ConfigureBackend(ctx context.Context, in *ConfigureBacke
 	return out, nil
 }
 
-func (c *backendClient) CreateWorkspace(ctx context.Context, in *CreateWorkspace_Request, opts ...grpc.CallOption) (*CreateWorkspace_Response, error) {
-	out := new(CreateWorkspace_Response)
-	err := c.cc.Invoke(ctx, "/Backend/CreateWorkspace", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendClient) DeleteWorkspace(ctx context.Context, in *DeleteWorkspace_Request, opts ...grpc.CallOption) (*DeleteWorkspace_Response, error) {
-	out := new(DeleteWorkspace_Response)
+func (c *backendClient) DeleteWorkspace(ctx context.Context, in *DeleteWorkspace_Request, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/Backend/DeleteWorkspace", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -82,8 +72,8 @@ func (c *backendClient) GetStatePayload(ctx context.Context, in *GetStatePayload
 	return out, nil
 }
 
-func (c *backendClient) PutState(ctx context.Context, in *PutState_Request, opts ...grpc.CallOption) (*PutState_Response, error) {
-	out := new(PutState_Response)
+func (c *backendClient) PutState(ctx context.Context, in *PutState_Request, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/Backend/PutState", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,8 +81,8 @@ func (c *backendClient) PutState(ctx context.Context, in *PutState_Request, opts
 	return out, nil
 }
 
-func (c *backendClient) DeleteState(ctx context.Context, in *DeleteState_Request, opts ...grpc.CallOption) (*DeleteState_Response, error) {
-	out := new(DeleteState_Response)
+func (c *backendClient) DeleteState(ctx context.Context, in *DeleteState_Request, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/Backend/DeleteState", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -109,8 +99,8 @@ func (c *backendClient) LockState(ctx context.Context, in *StateLock_Request, op
 	return out, nil
 }
 
-func (c *backendClient) UnlockState(ctx context.Context, in *StateUnlock_Request, opts ...grpc.CallOption) (*StateUnlock_Response, error) {
-	out := new(StateUnlock_Response)
+func (c *backendClient) UnlockState(ctx context.Context, in *StateUnlock_Request, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/Backend/UnlockState", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -122,15 +112,14 @@ func (c *backendClient) UnlockState(ctx context.Context, in *StateUnlock_Request
 // All implementations must embed UnimplementedBackendServer
 // for forward compatibility
 type BackendServer interface {
-	ConfigureBackend(context.Context, *ConfigureBackend_Request) (*ConfigureBackend_Response, error)
-	CreateWorkspace(context.Context, *CreateWorkspace_Request) (*CreateWorkspace_Response, error)
-	DeleteWorkspace(context.Context, *DeleteWorkspace_Request) (*DeleteWorkspace_Response, error)
+	ConfigureBackend(context.Context, *ConfigureBackend_Request) (*Empty, error)
+	DeleteWorkspace(context.Context, *DeleteWorkspace_Request) (*Empty, error)
 	ListWorkspaces(context.Context, *ListWorkspaces_Request) (*ListWorkspaces_Response, error)
 	GetStatePayload(context.Context, *GetStatePayload_Request) (*GetStatePayload_Response, error)
-	PutState(context.Context, *PutState_Request) (*PutState_Response, error)
-	DeleteState(context.Context, *DeleteState_Request) (*DeleteState_Response, error)
+	PutState(context.Context, *PutState_Request) (*Empty, error)
+	DeleteState(context.Context, *DeleteState_Request) (*Empty, error)
 	LockState(context.Context, *StateLock_Request) (*StateLock_Response, error)
-	UnlockState(context.Context, *StateUnlock_Request) (*StateUnlock_Response, error)
+	UnlockState(context.Context, *StateUnlock_Request) (*Empty, error)
 	mustEmbedUnimplementedBackendServer()
 }
 
@@ -138,13 +127,10 @@ type BackendServer interface {
 type UnimplementedBackendServer struct {
 }
 
-func (UnimplementedBackendServer) ConfigureBackend(context.Context, *ConfigureBackend_Request) (*ConfigureBackend_Response, error) {
+func (UnimplementedBackendServer) ConfigureBackend(context.Context, *ConfigureBackend_Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfigureBackend not implemented")
 }
-func (UnimplementedBackendServer) CreateWorkspace(context.Context, *CreateWorkspace_Request) (*CreateWorkspace_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkspace not implemented")
-}
-func (UnimplementedBackendServer) DeleteWorkspace(context.Context, *DeleteWorkspace_Request) (*DeleteWorkspace_Response, error) {
+func (UnimplementedBackendServer) DeleteWorkspace(context.Context, *DeleteWorkspace_Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkspace not implemented")
 }
 func (UnimplementedBackendServer) ListWorkspaces(context.Context, *ListWorkspaces_Request) (*ListWorkspaces_Response, error) {
@@ -153,16 +139,16 @@ func (UnimplementedBackendServer) ListWorkspaces(context.Context, *ListWorkspace
 func (UnimplementedBackendServer) GetStatePayload(context.Context, *GetStatePayload_Request) (*GetStatePayload_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatePayload not implemented")
 }
-func (UnimplementedBackendServer) PutState(context.Context, *PutState_Request) (*PutState_Response, error) {
+func (UnimplementedBackendServer) PutState(context.Context, *PutState_Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutState not implemented")
 }
-func (UnimplementedBackendServer) DeleteState(context.Context, *DeleteState_Request) (*DeleteState_Response, error) {
+func (UnimplementedBackendServer) DeleteState(context.Context, *DeleteState_Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteState not implemented")
 }
 func (UnimplementedBackendServer) LockState(context.Context, *StateLock_Request) (*StateLock_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LockState not implemented")
 }
-func (UnimplementedBackendServer) UnlockState(context.Context, *StateUnlock_Request) (*StateUnlock_Response, error) {
+func (UnimplementedBackendServer) UnlockState(context.Context, *StateUnlock_Request) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnlockState not implemented")
 }
 func (UnimplementedBackendServer) mustEmbedUnimplementedBackendServer() {}
@@ -192,24 +178,6 @@ func _Backend_ConfigureBackend_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServer).ConfigureBackend(ctx, req.(*ConfigureBackend_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Backend_CreateWorkspace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateWorkspace_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServer).CreateWorkspace(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/Backend/CreateWorkspace",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServer).CreateWorkspace(ctx, req.(*CreateWorkspace_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -350,10 +318,6 @@ var Backend_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConfigureBackend",
 			Handler:    _Backend_ConfigureBackend_Handler,
-		},
-		{
-			MethodName: "CreateWorkspace",
-			Handler:    _Backend_CreateWorkspace_Handler,
 		},
 		{
 			MethodName: "DeleteWorkspace",

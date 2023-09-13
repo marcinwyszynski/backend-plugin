@@ -11,7 +11,6 @@ type BackendPlugin interface {
 
 	// Workspace operations.
 	ListWorkspaces(_ context.Context) ([]string, error)
-	CreateWorkspace(_ context.Context, workspace string) error
 	DeleteWorkspace(_ context.Context, workspace string, force bool) error
 
 	// State operations.
