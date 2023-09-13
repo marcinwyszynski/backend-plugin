@@ -137,7 +137,7 @@ func (c *GRPCClient) UnlockState(ctx context.Context, workspace, id string) erro
 }
 
 func buildGoError(messages []string) error {
-	result := make([]error, len(messages), len(messages))
+	result := make([]error, len(messages))
 
 	for i := range messages {
 		result[i] = errors.New(messages[i])
