@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+option go_package = "../proto";
+
+import "google/protobuf/timestamp.proto";
+
+service Backend {
+    rpc ConfigureBackend(ConfigureBackend.Request) returns (ConfigureBackend.Response);
+    rpc CreateWorkspace(CreateWorkspace.Request) returns (CreateWorkspace.Response);
+    rpc DeleteWorkspace(DeleteWorkspace.Request) returns (DeleteWorkspace.Response);
+    rpc ListWorkspaces(ListWorkspaces.Request) returns (ListWorkspaces.Response);
+    rpc GetStatePayload(GetStatePayload.Request) returns (GetStatePayload.Response);
+    rpc PutState(PutState.Request) returns (PutState.Response);
+    rpc DeleteState(DeleteState.Request) returns (DeleteState.Response);
+    rpc LockState(StateLock.Request) returns (StateLock.Response);
+    rpc UnlockState(StateUnlock.Request) returns (StateUnlock.Response);
+}
+
+message ConfigureBackend {
+    message Request {
+        map<string, string> config = 1;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message CreateWorkspace {
+    message Request {
+        string workspace = 1;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message DeleteWorkspace {
+    message Request {
+        string workspace = 1;
+        bool force = 2;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message ListWorkspaces {
+    message Request {
+    }
+
+    message Response {
+        repeated string workspaces = 1;
+        repeated string errors = 2;
+    }
+}
+
+message GetStatePayload {
+    message Request {
+        string workspace = 1;
+    }
+
+    message Response {
+        StatePayload payload = 1;
+        repeated string errors = 2;
+    }
+}
+
+message StatePayload {
+    bytes md5 = 1;
+    bytes data = 2;
+}
+
+message PutState {
+    message Request {
+        string workspace = 1;
+        bytes data = 2;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message DeleteState {
+    message Request {
+        string workspace = 1;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message StateLock {
+    message Request {
+        string workspace = 1;
+        StateLockInfo info = 2;
+    }
+
+    message Response {
+        string id = 1;
+        repeated string errors = 2;
+    }
+}
+
+message StateUnlock {
+    message Request {
+        string workspace = 1;
+        string id = 2;
+    }
+
+    message Response {
+        repeated string errors = 1;
+    }
+}
+
+message StateLockInfo {
+    string id = 1;
+    string operation = 2;
+    string info = 3;
+    string who = 4;
+    string version = 5;
+    google.protobuf.Timestamp created = 6;
+    string path = 7;
+}
