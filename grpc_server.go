@@ -3,17 +3,23 @@ package backendplugin
 import (
 	"context"
 
+	"github.com/hashicorp/go-hclog"
+
 	"github.com/marcinwyszynski/backendplugin/proto"
 )
 
 type GRPCServer struct {
 	proto.UnimplementedBackendServer
 
+	logger hclog.Logger
+
 	// This is the real implementation
 	Impl BackendPlugin
 }
 
 func (s *GRPCServer) ConfigureBackend(ctx context.Context, req *proto.ConfigureBackend_Request) (*proto.Empty, error) {
+	s.logger.Trace("GRPCServer: ConfigureBackend")
+
 	if err := s.Impl.Configure(ctx, req.Config); err != nil {
 		return nil, err
 	}
@@ -22,6 +28,8 @@ func (s *GRPCServer) ConfigureBackend(ctx context.Context, req *proto.ConfigureB
 }
 
 func (s *GRPCServer) DeleteWorkspace(ctx context.Context, req *proto.DeleteWorkspace_Request) (*proto.Empty, error) {
+	s.logger.Trace("GRPCServer: DeleteWorkspace")
+
 	if err := s.Impl.DeleteWorkspace(ctx, req.Workspace, req.Force); err != nil {
 		return nil, err
 	}
@@ -30,6 +38,8 @@ func (s *GRPCServer) DeleteWorkspace(ctx context.Context, req *proto.DeleteWorks
 }
 
 func (s *GRPCServer) ListWorkspaces(ctx context.Context, req *proto.ListWorkspaces_Request) (*proto.ListWorkspaces_Response, error) {
+	s.logger.Trace("GRPCServer: ListWorkspaces")
+
 	workspaces, err := s.Impl.ListWorkspaces(ctx)
 	if err != nil {
 		return nil, err
@@ -41,6 +51,8 @@ func (s *GRPCServer) ListWorkspaces(ctx context.Context, req *proto.ListWorkspac
 }
 
 func (s *GRPCServer) GetStatePayload(ctx context.Context, req *proto.GetStatePayload_Request) (*proto.GetStatePayload_Response, error) {
+	s.logger.Trace("GRPCServer: GetStatePayload")
+
 	payload, err := s.Impl.GetStatePayload(ctx, req.Workspace)
 	if err != nil {
 		return nil, err
@@ -60,6 +72,8 @@ func (s *GRPCServer) GetStatePayload(ctx context.Context, req *proto.GetStatePay
 }
 
 func (s *GRPCServer) PutState(ctx context.Context, req *proto.PutState_Request) (*proto.Empty, error) {
+	s.logger.Trace("GRPCServer: PutState")
+
 	if err := s.Impl.PutState(ctx, req.Workspace, req.Data); err != nil {
 		return nil, err
 	}
@@ -68,6 +82,8 @@ func (s *GRPCServer) PutState(ctx context.Context, req *proto.PutState_Request) 
 }
 
 func (s *GRPCServer) DeleteState(ctx context.Context, req *proto.DeleteState_Request) (*proto.Empty, error) {
+	s.logger.Trace("GRPCServer: DeleteState")
+
 	if err := s.Impl.DeleteState(ctx, req.Workspace); err != nil {
 		return nil, err
 	}
@@ -76,6 +92,8 @@ func (s *GRPCServer) DeleteState(ctx context.Context, req *proto.DeleteState_Req
 }
 
 func (s *GRPCServer) LockState(ctx context.Context, req *proto.StateLock_Request) (*proto.StateLock_Response, error) {
+	s.logger.Trace("GRPCServer: LockState")
+
 	resp, err := s.Impl.LockState(ctx, req.Workspace, &LockInfo{
 		ID:        req.Info.Id,
 		Operation: req.Info.Operation,
@@ -94,6 +112,8 @@ func (s *GRPCServer) LockState(ctx context.Context, req *proto.StateLock_Request
 }
 
 func (s *GRPCServer) UnlockState(ctx context.Context, req *proto.StateUnlock_Request) (*proto.Empty, error) {
+	s.logger.Trace("GRPCServer: UnlockState")
+
 	if err := s.Impl.UnlockState(ctx, req.Workspace, req.Id); err != nil {
 		return nil, err
 	}

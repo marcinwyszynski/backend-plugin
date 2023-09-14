@@ -28,7 +28,10 @@ func Server(impl BackendPlugin) *plugin.ServeConfig {
 	return &plugin.ServeConfig{
 		HandshakeConfig: Handshake,
 		Plugins: map[string]plugin.Plugin{
-			BackendPluginName: &GRPCPlugin{Impl: impl},
+			BackendPluginName: &GRPCPlugin{
+				logger: logger,
+				Impl:   impl,
+			},
 		},
 		GRPCServer: plugin.DefaultGRPCServer,
 		Logger:     logger,

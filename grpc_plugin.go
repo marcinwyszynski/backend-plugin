@@ -3,21 +3,25 @@ package backendplugin
 import (
 	"context"
 
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
-	"github.com/marcinwyszynski/backendplugin/proto"
 	"google.golang.org/grpc"
+
+	"github.com/marcinwyszynski/backendplugin/proto"
 )
 
 type GRPCPlugin struct {
 	// GRPCPlugin must still implement the Plugin interface
 	plugin.Plugin
 
+	logger hclog.Logger
+
 	// Concrete implementation, written in Go.
 	Impl BackendPlugin
 }
 
 func (p *GRPCPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
-	proto.RegisterBackendServer(s, &GRPCServer{Impl: p.Impl})
+	proto.RegisterBackendServer(s, &GRPCServer{Impl: p.Impl, logger: p.logger})
 	return nil
 }
 
