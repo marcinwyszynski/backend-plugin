@@ -18,7 +18,11 @@ func (c *GRPCClient) Configure(ctx context.Context, config map[string]string) er
 		Config: config,
 	})
 
-	return fmt.Errorf("failed to configure backend: %w", err)
+	if err != nil {
+		return fmt.Errorf("failed to configure backend: %w", err)
+	}
+
+	return nil
 }
 
 func (c *GRPCClient) ListWorkspaces(ctx context.Context) ([]string, error) {
@@ -36,7 +40,11 @@ func (c *GRPCClient) DeleteWorkspace(ctx context.Context, workspace string, forc
 		Force:     force,
 	})
 
-	return fmt.Errorf("failed to delete workspace: %w", err)
+	if err != nil {
+		return fmt.Errorf("failed to delete workspace: %w", err)
+	}
+
+	return nil
 }
 
 func (c *GRPCClient) GetStatePayload(ctx context.Context, workspace string) (*Payload, error) {
