@@ -107,7 +107,7 @@ func (c *GRPCClient) LockState(ctx context.Context, workspace string, info *Lock
 		return "", fmt.Errorf("failed to lock state: %w", err)
 	}
 
-	return response.Id, fmt.Errorf("failed to lock state: %w", err)
+	return response.Id, nil
 }
 
 func (c *GRPCClient) UnlockState(ctx context.Context, workspace, id string) error {
